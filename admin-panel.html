@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out;
+        }
+        .dropdown-menu {
+            display: none;
+        }
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Login Form (Initially Visible) -->
+    <div id="login-container" class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8">
+            <div>
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                    E-Commerce Admin Panel
+                </h2>
+                <p class="mt-2 text-center text-sm text-gray-600">
+                    Sign in to access your dashboard
+                </p>
+            </div>
+            <form class="mt-8 space-y-6" id="login-form">
+                <div class="rounded-md shadow-sm -space-y-px">
+                    <div>
+                        <label for="email" class="sr-only">Email address</label>
+                        <input id="email" name="email" type="email" autocomplete="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Email address">
+                    </div>
+                    <div>
+                        <label for="password" class="sr-only">Password</label>
+                        <input id="password" name="password" type="password" autocomplete="current-password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Password">
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Sign in
+                    </button>
+                </div>
+                
+                <div class="text-center">
+                    <p class="text-sm text-gray-600">
+                        Demo credentials: admin@example.com / admin123
+                    </p>
+                </div>
+            </form>
+            <div id="login-error" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"></div>
+        </div>
+    </div>
+
+    <!-- Admin Panel (Initially Hidden) -->
+    <div id="admin-panel" class="hidden">
+        <!-- Sidebar -->
+        <div id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-white shadow-lg z-20 sidebar-transition">
+            <div class="p-6 border-b border-gray-200">
+                <h1 class="text-xl font-bold text-indigo-600">Buy99</h1>
+                <h2 class="text-xl font-bold text-indigo-600">AdminPanel</h2>
+            </div>
+            
+            <nav class="mt-6 px-4">
+                <ul class="space-y-2">
+                    <li><a href="#" class="flex items-center p-3 text-gray-700 rounded-md hover:bg-indigo-50 hover:text-indigo-600"><i class="fas fa-tachometer-alt mr-3"></i> Dashboard</a></li>
+                    <li><a href="#" class="flex items-center p-3 text-gray-700 rounded-md hover:bg-indigo-50 hover:text-indigo-600"><i class="fas fa-shopping-cart mr-3"></i> Your Products</a></li>
+                    <li><a href="#" id="add-product-btn" class="flex items-center p-3 text-gray-700 rounded-md hover:bg-indigo-50 hover:text-indigo-600"><i class="fas fa-box mr-3"></i> Add New Products</a></li>
+                    <li><a href="#" class="flex items-center p-3 text-gray-700 rounded-md hover:bg-indigo-50 hover:text-indigo-600"><i class="fa-solid fa-truck-fast mr-3"></i> Orders</a></li>
+                    <li><a href="#" class="flex items-center p-3 text-gray-700 rounded-md hover:bg-indigo-50 hover:text-indigo-600"><i class="fas fa-users mr-3"></i> Customers</a></li>
+                    <li><a href="#" class="flex items-center p-3 text-gray-700 rounded-md hover:bg-indigo-50 hover:text-indigo-600"><i class="fas fa-chart-bar mr-3"></i> Reports</a></li>
+                    <li><a href="#" class="flex items-center p-3 text-gray-700 rounded-md hover:bg-indigo-50 hover:text-indigo-600"><i class="fas fa-cog mr-3"></i> Settings</a></li>
+                    <li><a href="#" id="logout-btn" class="flex items-center p-3 text-gray-700 rounded-md hover:bg-indigo-50 hover:text-indigo-600"><i class="fas fa-sign-out-alt mr-3"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Overlay for mobile sidebar -->
+        <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-10 hidden"></div>
+
+        <!-- Main Content -->
+        <div class="ml-64 min-h-screen">
+            <!-- Top Navigation Bar -->
+            <header class="bg-white shadow-sm border-b border-gray-200 py-4 px-6 flex justify-between items-center">
+                <button id="menu-toggle" class="lg:hidden text-gray-500 focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <input type="text" placeholder="Search..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 w-64">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    
+                    <div class="relative dropdown">
+                        <button class="p-2 text-gray-500 hover:text-gray-700 relative">
+                            <i class="fas fa-bell text-xl"></i>
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+                        </button>
+                        <div class="dropdown-menu absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg py-2 z-30">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">New Order</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Payment Received</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View All</a>
+                        </div>
+                    </div>
+                    
+                    <div class="relative dropdown">
+                        <button class="flex items-center space-x-2 p-2 text-gray-500 hover:text-gray-700">
+                            <img src="https://picsum.photos/seed/admin/40/40.jpg" alt="Profile" class="w-8 h-8 rounded-full">
+                            <span class="hidden md:block" id="user-name">John Doe</span>
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+                        <div class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-30">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                            <hr class="my-2">
+                            <a href="#" id="dropdown-logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="p-6">
+                <!-- Page Header -->
+                <div class="mb-8">
+                    <h1 class="text-2xl font-semibold text-gray-800">Dashboard Overview</h1>
+                    <p class="text-gray-600">Welcome back, <span id="welcome-user">John</span>! Here's what's happening today.</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Total Sales</p>
+                                <p class="text-2xl font-bold text-gray-900">$24,567</p>
+                                <p class="text-sm text-green-600 mt-1"><i class="fas fa-arrow-up mr-1"></i>12% from last month</p>
+                            </div>
+                            <div class="p-3 bg-blue-100 rounded-full">
+                                <i class="fas fa-dollar-sign text-blue-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Total Orders</p>
+                                <p class="text-2xl font-bold text-gray-900">1,234</p>
+                                <p class="text-sm text-green-600 mt-1"><i class="fas fa-arrow-up mr-1"></i>8% from last month</p>
+                            </div>
+                            <div class="p-3 bg-green-100 rounded-full">
+                                <i class="fas fa-shopping-cart text-green-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Total Customers</p>
+                                <p class="text-2xl font-bold text-gray-900">892</p>
+                                <p class="text-sm text-green-600 mt-1"><i class="fas fa-arrow-up mr-1"></i>15% from last month</p>
+                            </div>
+                            <div class="p-3 bg-purple-100 rounded-full">
+                                <i class="fas fa-users text-purple-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Pending Orders</p>
+                                <p class="text-2xl font-bold text-gray-900">45</p>
+                                <p class="text-sm text-red-600 mt-1"><i class="fas fa-arrow-up mr-1"></i>3% from last month</p>
+                            </div>
+                            <div class="p-3 bg-yellow-100 rounded-full">
+                                <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Orders -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h2 class="text-lg font-semibold text-gray-800">Recent Orders</h2>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#ORD-001</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Jane Smith</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-06-15</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$245.00</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Delivered</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-indigo-600 hover:text-indigo-900">View</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#ORD-002</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Mike Johnson</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-06-14</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$189.50</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Processing</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-indigo-600 hover:text-indigo-900">View</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#ORD-003</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Sarah Williams</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-06-13</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$342.75</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Cancelled</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-indigo-600 hover:text-indigo-900">View</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#ORD-004</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">David Brown</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-06-12</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$156.20</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Delivered</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-indigo-600 hover:text-indigo-900">View</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#ORD-005</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Emily Davis</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-06-11</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$289.99</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Processing</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-indigo-600 hover:text-indigo-900">View</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                        <div class="text-sm text-gray-500">Showing 1 to 5 of 25 entries</div>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-500 hover:bg-gray-50">Previous</button>
+                            <button class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-500 hover:bg-gray-50">Next</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h2 class="text-lg font-semibold text-gray-800">All Product</h2>
+                    </div>
+                    <div class="allProduct">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">Image</th>
+                                    <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">Product Name</th>
+                                    <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">Amount</th>
+                                    <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">Product ID</th>
+                                    <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">Rating</th>
+                                    <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">Uplod Time</th>
+                                </tr>
+                            </thead>
+                            <div id="loading-message" class="text-center py-12">
+                                <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+                                <p class="mt-4 text-gray-600">Loading products from Firebase...</p>
+                            </div>
+
+                            <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mt-4">
+                                <strong class="font-bold">Error!</strong>
+                                <span id="error-text"></span>
+                            </div>
+
+                            <div id="empty-message" class="hidden text-center py-12">
+                                <i class="fas fa-box-open text-5xl text-gray-300 mb-4"></i>
+                                <h3 class="text-xl font-semibold text-gray-600">No products found</h3>
+                                <p class="text-gray-500">There are no products in the database yet.</p>
+                            </div>
+                            <tbody id="AllUplodeProducts" class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><img style="width: 50px; " src="" alt=""></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Jane Smith</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-06-15</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$245.00</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Delivered</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-indigo-600 hover:text-indigo-900">View</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#ORD-001</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Jane Smith</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-06-15</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$245.00</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Delivered</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-indigo-600 hover:text-indigo-900">View</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#ORD-001</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Jane Smith</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-06-15</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$245.00</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Delivered</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-indigo-600 hover:text-indigo-900">View</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#ORD-002</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Mike Johnson</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-06-14</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$189.50</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Processing</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-indigo-600 hover:text-indigo-900">View</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#ORD-003</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Sarah Williams</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-06-13</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$342.75</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Cancelled</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-indigo-600 hover:text-indigo-900">View</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#ORD-004</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">David Brown</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-06-12</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$156.20</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Delivered</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-indigo-600 hover:text-indigo-900">View</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#ORD-005</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Emily Davis</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-06-11</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$289.99</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Processing</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-indigo-600 hover:text-indigo-900">View</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                        <div class="text-sm text-gray-500">Showing 1 to 5 of 25 entries</div>
+                    </div>
+                </div>
+            </main>
+
+
+            <!-- Footer -->
+            <footer class="bg-white border-t border-gray-200 py-4 px-6 mt-8">
+                <div class="flex justify-between items-center text-sm text-gray-500">
+                    <div>© 2023 E-Commerce Admin Panel. All rights reserved.</div>
+                    <div class="flex space-x-4">
+                        <a href="#" class="hover:text-gray-700">Privacy Policy</a>
+                        <a href="#" class="hover:text-gray-700">Terms of Service</a>
+                        <a href="#" class="hover:text-gray-700">Contact Us</a>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <!-- Firebase Authentication -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <!-- Firebase Realtime Database -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBet7btzILdzKdSxBg3R80L1dIic5vR734",
+            authDomain: "buy-99.firebaseapp.com",
+            databaseURL: "https://buy-99-default-rtdb.firebaseio.com",
+            projectId: "buy-99",
+            storageBucket: "buy-99.appspot.com",
+            messagingSenderId: "600126667480",
+            appId: "1:600126667480:web:343535e09ad6c945be75ad",
+            measurementId: "G-P04PG87W69"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // DOM Elements
+        const loginContainer = document.getElementById('login-container');
+        const adminPanel = document.getElementById('admin-panel');
+        const loginForm = document.getElementById('login-form');
+        const loginError = document.getElementById('login-error');
+        const logoutBtn = document.getElementById('logout-btn');
+        const dropdownLogout = document.getElementById('dropdown-logout');
+        const welcomeUser = document.getElementById('welcome-user');
+        const userName = document.getElementById('user-name');
+        const menuToggle = document.getElementById("menu-toggle");
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("overlay");
+        const addProductBtn = document.getElementById("add-product-btn");
+        const productsContainer = document.getElementById("AllUplodeProducts");
+        const loadingMessage = document.getElementById('loading-message');
+        const errorMessage = document.getElementById('error-message');
+        const errorText = document.getElementById('error-text');
+        const emptyMessage = document.getElementById('empty-message');
+
+
+
+
+        
+
+        // Check if user is logged in
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in
+                loginContainer.classList.add('hidden');
+                adminPanel.classList.remove('hidden');
+                welcomeUser.textContent = user.email.split('@')[0];
+                userName.textContent = user.email.split('@')[0];
+            } else {
+                // No user is signed in
+                loginContainer.classList.remove('hidden');
+                adminPanel.classList.add('hidden');
+            }
+        });
+
+        // Login functionality
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Signed in 
+                    loginError.classList.add('hidden');
+                })
+                .catch((error) => {
+                    loginError.textContent = error.message;
+                    loginError.classList.remove('hidden');
+                });
+        });
+
+        // Logout functionality
+        function logout() {
+            auth.signOut().then(() => {
+                // Sign-out successful
+            }).catch((error) => {
+                console.error('Logout error:', error);
+            });
+        }
+
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                logout();
+            });
+        }
+
+        if (dropdownLogout) {
+            dropdownLogout.addEventListener('click', (e) => {
+                e.preventDefault();
+                logout();
+            });
+        }
+
+        // Sidebar toggle (mobile view)
+        if (menuToggle) {
+            menuToggle.addEventListener("click", () => {
+                sidebar.classList.toggle("-translate-x-full");
+                overlay.classList.toggle("hidden");
+            });
+        }
+
+        if (overlay) {
+            overlay.addEventListener("click", () => {
+                sidebar.classList.add("-translate-x-full");
+                overlay.classList.add("hidden");
+            });
+        }
+
+        // Product popup functionality
+        if (addProductBtn) {
+            addProductBtn.addEventListener("click", (e) => {
+                e.preventDefault();
+                createProductPopup();
+            });
+        }
+
+        function createProductPopup() {
+            const popupOverlay = document.createElement("div");
+            popupOverlay.className = "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50";
+
+            const popup = document.createElement("div");
+            popup.className = "bg-white p-6 rounded-lg shadow-lg w-full max-w-lg";
+
+            popup.innerHTML = `
+                <h2 class="text-xl font-semibold mb-4">Add New Product</h2>
+                <form id="productForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium">Image URL</label>
+                        <input type="text" id="productImage" class="w-full border border-gray-300 rounded-md p-2 mt-1" placeholder="Paste image link">
+                        <img id="previewImage" src="" alt="" class="hidden mt-2 w-32 h-32 object-cover rounded-md border">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium">Product Name</label>
+                        <input type="text" id="productName" class="w-full border border-gray-300 rounded-md p-2 mt-1">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium">Price</label>
+                            <input type="number" id="productPrice" class="w-full border border-gray-300 rounded-md p-2 mt-1">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium">Original Price</label>
+                            <input type="number" id="productOriginalPrice" class="w-full border border-gray-300 rounded-md p-2 mt-1">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium">Description</label>
+                        <textarea id="productDescription" class="w-full border border-gray-300 rounded-md p-2 mt-1"></textarea>
+                    </div>
+
+                    <div class="flex justify-end space-x-3">
+                        <button type="button" id="cancelBtn" class="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400">Cancel</button>
+                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Save</button>
+                    </div>
+                </form>
+            `;
+
+            popupOverlay.appendChild(popup);
+            document.body.appendChild(popupOverlay);
+
+            // Preview image
+            const productImageInput = document.getElementById("productImage");
+            const previewImage = document.getElementById("previewImage");
+            productImageInput.addEventListener("input", () => {
+                const url = productImageInput.value.trim();
+                if (url) {
+                    previewImage.src = url;
+                    previewImage.classList.remove("hidden");
+                } else {
+                    previewImage.classList.add("hidden");
+                }
+            });
+
+            // Cancel button
+            document.getElementById("cancelBtn").addEventListener("click", () => {
+                popupOverlay.remove();
+            });
+
+            // Form submit
+            document.getElementById("productForm").addEventListener("submit", (e) => {
+                e.preventDefault();
+
+                const product = {
+                    title: document.getElementById("productName").value,
+                    price: parseFloat(document.getElementById("productPrice").value),
+                    originalPrice: parseFloat(document.getElementById("productOriginalPrice").value),
+                    discount: 0,
+                    description: document.getElementById("productDescription").value,
+                    rating: 0,
+                    reviewCount: 0,
+                    image: document.getElementById("productImage").value,
+                    createdAt: new Date().toISOString()
+                };
+
+                product.discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+
+                // Save product to Firebase
+                const productsRef = database.ref('products');
+                const newProductRef = productsRef.push();
+                
+                newProductRef.set(product)
+                    .then(() => {
+                        alert("Product added successfully!");
+                        popupOverlay.remove();
+                    })
+                    .catch((error) => {
+                        console.error("Error adding product:", error);
+                        alert("Error adding product. Please try again.");
+                    });
+            });
+        }
+
+        // Function to format price
+        function formatPrice(price) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            }).format(price);
+        }
+
+        // Function to calculate discount percentage
+        function calculateDiscount(originalPrice, price) {
+            return Math.round(((originalPrice - price) / originalPrice) * 100);
+        }
+
+        // Function to create product card HTML
+        function createProductCard(product, productId) {
+            const discount = calculateDiscount(product.originalPrice, product.price);
+            
+            return `
+
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><img style="width: 50px; " src="${product.image}" alt="${product.title}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${product.title}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatPrice(product.price)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${productId}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${product.rating > 0 ? '★'.repeat(Math.round(product.rating)) : 'No ratings'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Delivered</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <button class="text-indigo-600 hover:text-indigo-900">View</button>
+                    </td>
+                </tr>
+            `;
+        }
+
+        // Function to display products
+        function displayProducts(products) {
+            // Clear the container but keep the first 4 skeleton cards
+            productsContainer.innerHTML = '';
+            
+            if (products && Object.keys(products).length > 0) {
+                // Convert products object to array and create cards
+                Object.entries(products).forEach(([productId, product]) => {
+                    const productCard = createProductCard(product, productId);
+                    productsContainer.innerHTML += productCard;
+                });
+                
+                // Hide loading and error messages
+                loadingMessage.classList.add('hidden');
+                errorMessage.classList.add('hidden');
+                emptyMessage.classList.add('hidden');
+            } else {
+                // Show empty message
+                loadingMessage.classList.add('hidden');
+                errorMessage.classList.add('hidden');
+                emptyMessage.classList.remove('hidden');
+            }
+        }
+
+        // Function to handle errors
+        function handleError(error) {
+            console.error('Error fetching products:', error);
+            loadingMessage.classList.add('hidden');
+            errorText.textContent = error.message || 'Failed to load products from Firebase.';
+            errorMessage.classList.remove('hidden');
+        }
+
+        // Fetch products from Firebase
+        function fetchProducts() {
+            const productsRef = database.ref('products');
+            
+            productsRef.on('value', (snapshot) => {
+                const products = snapshot.val();
+                displayProducts(products);
+            }, (error) => {
+                handleError(error);
+            });
+        }
+
+        // Initialize the page
+        function init() {
+            fetchProducts();
+        }
+
+        // Start when page loads
+        document.addEventListener('DOMContentLoaded', init);
+
+    </script>
+</body>
+</html>
