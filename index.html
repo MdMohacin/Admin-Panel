@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,10 +14,12 @@
             border-bottom: 2px solid transparent;
             transition: all 0.3s;
         }
+
         .auth-tab.active {
             border-bottom-color: #4f46e5;
             color: #4f46e5;
         }
+
         .error-message {
             background-color: #fef2f2;
             border: 1px solid #fecaca;
@@ -28,64 +31,74 @@
         }
     </style>
 </head>
+
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
     <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <div class="text-center mb-8">
             <h1 class="text-3xl font-bold text-indigo-600">Buy99</h1>
             <p class="text-gray-600 mt-2">Admin Panel Authentication</p>
         </div>
-        
+
         <div class="flex border-b mb-6">
             <div id="login-tab" class="auth-tab active w-1/2 text-center">Login</div>
             <div id="register-tab" class="auth-tab w-1/2 text-center">Register</div>
         </div>
-        
+
         <!-- Login Form -->
         <form id="login-form" class="space-y-4">
             <div>
                 <label for="login-email" class="block text-sm font-medium text-gray-700">Email</label>
-                <input type="email" id="login-email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                <input type="email" id="login-email" required
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
             </div>
-            
+
             <div>
                 <label for="login-password" class="block text-sm font-medium text-gray-700">Password</label>
-                <input type="password" id="login-password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                <input type="password" id="login-password" required
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
             </div>
-            
-            <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+
+            <button type="submit"
+                class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 Sign in
             </button>
         </form>
-        
+
         <!-- Register Form -->
         <form id="register-form" class="space-y-4 hidden">
             <div>
                 <label for="register-name" class="block text-sm font-medium text-gray-700">Full Name</label>
-                <input type="text" id="register-name" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                <input type="text" id="register-name" required
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
             </div>
-            
+
             <div>
                 <label for="register-email" class="block text-sm font-medium text-gray-700">Email</label>
-                <input type="email" id="register-email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                <input type="email" id="register-email" required
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
             </div>
-            
+
             <div>
                 <label for="register-password" class="block text-sm font-medium text-gray-700">Password</label>
-                <input type="password" id="register-password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                <input type="password" id="register-password" required
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
             </div>
-            
+
             <div>
-                <label for="register-confirm-password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
-                <input type="password" id="register-confirm-password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                <label for="register-confirm-password" class="block text-sm font-medium text-gray-700">Confirm
+                    Password</label>
+                <input type="password" id="register-confirm-password" required
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
             </div>
-            
-            <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+
+            <button type="submit"
+                class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 Create Account
             </button>
         </form>
-        
+
         <div id="error-message" class="error-message mt-4"></div>
-        
+
         <div class="mt-6 bg-gray-100 p-4 rounded-md">
             <p class="text-sm text-gray-600 font-medium">Demo Credentials:</p>
             <p class="text-sm text-gray-600 mt-1">Email: admin@example.com</p>
@@ -154,20 +167,20 @@
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             clearError();
-            
+
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
-            
+
             auth.signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
                     // Signed in successfully
                     console.log("User logged in:", userCredential.user);
                     // Redirect to admin panel (you would change this to your actual admin panel URL)
-                    window.location.href = "admin-panel.html";
+                    window.location.href = "adminPanel.html";
                 })
                 .catch((error) => {
                     console.error("Login error:", error);
-                    
+
                     // Handle specific error cases
                     if (error.code === 'auth/invalid-login-credentials') {
                         showError('Invalid email or password. Please try again.');
@@ -185,40 +198,40 @@
         registerForm.addEventListener('submit', (e) => {
             e.preventDefault();
             clearError();
-            
+
             const name = document.getElementById('register-name').value;
             const email = document.getElementById('register-email').value;
             const password = document.getElementById('register-password').value;
             const confirmPassword = document.getElementById('register-confirm-password').value;
-            
+
             // Validate passwords match
             if (password !== confirmPassword) {
                 showError('Passwords do not match.');
                 return;
             }
-            
+
             // Validate password strength
             if (password.length < 6) {
                 showError('Password should be at least 6 characters.');
                 return;
             }
-            
+
             auth.createUserWithEmailAndPassword(email, password)
                 .then((userCredential) => {
                     // Signed up successfully
                     console.log("User registered:", userCredential.user);
-                    
+
                     // Update user profile with name
                     userCredential.user.updateProfile({
                         displayName: name
                     }).then(() => {
                         // Redirect to admin panel
-                        window.location.href = "admin-panel.html";
+                        window.location.href = "adminPanel.html";
                     });
                 })
                 .catch((error) => {
                     console.error("Registration error:", error);
-                    
+
                     // Handle specific error cases
                     if (error.code === 'auth/email-already-in-use') {
                         showError('This email is already registered. Please login instead.');
@@ -236,7 +249,7 @@
         function tryDemoLogin() {
             const demoEmail = "admin@example.com";
             const demoPassword = "admin123";
-            
+
             document.getElementById('login-email').value = demoEmail;
             document.getElementById('login-password').value = demoPassword;
         }
@@ -245,4 +258,5 @@
         window.addEventListener('load', tryDemoLogin);
     </script>
 </body>
+
 </html>
